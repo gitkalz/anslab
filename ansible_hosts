@@ -1,2 +1,2 @@
-airdev
-airrem
+airdev ansible_user=kalyan
+airrem ansible_user=kalyan
