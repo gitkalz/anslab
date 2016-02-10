@@ -40,3 +40,31 @@
     apt:
       name=docker-engine
       update_cache=yes
+
+#This task adds docker group 
+  - name: Create a docker group
+    group: 
+      name=docker 
+      state=present
+#Adds users defined to docker group
+  - name: Add user(s) to docker group
+    user: 
+      name={{ item }} 
+      group=docker 
+      state=present
+    with_items: docker_users
+    when: docker_users is defined
+
+
+ ###################
+ #Task to pull Docker images
+ ##################
+  - name: Pull and run the docker container glyptodon/guacd
+    docker: 
+      name={{ item }}
+      image={{ item }}
+      state=present
+    with_items:
+     - glyptodon/guacd
+     - glyptodon/guacamole
+     - mysql
