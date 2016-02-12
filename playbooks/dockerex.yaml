@@ -83,7 +83,24 @@
   - name: Start the mysql docker container
     docker:
       name: lab-mysql
+      image: mysql
       state: started
+
+  - name: Wait for the mysql server to start
+    action: command docker logs lab-mysql
+    register: mysql_logs
+    until: mysql_logs.stdout.find("ready for connections") != -1
+    retries: 30
+    delay: 10
+
+  - name: Fetch the MySQL Container IP
+    shell: docker exec -it lab-mysql bash -c 'mysql -uroot -p$MYSQL_ROOT_PASSWORD < /var/lib/mysql/initdb.sql'
+    register: db_create_status
+
+  - name: print the mysql db creation status
+    debug: msg={{ db_create_status.stdout }}  
+
+
 
 
 
