@@ -1,6 +1,7 @@
 ---
 - hosts: all
-  sudo: true
+  become: yes
+  become_method: sudo
   tasks:
 #This will fail if the target OS is not Ubuntu 14.04  
   - name: Fail if OS distro is not Ubuntu 14.04
