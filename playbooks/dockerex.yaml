@@ -76,7 +76,7 @@
       state: started
       env: "MYSQL_ROOT_PASSWORD=Random123"
       volumes:
-      - /opt/guacsql:/var/lib/mysql
+        - /opt/guacsql:/var/lib/mysql
 
   - name: Wait for the mysql server to start
     action: command docker logs lab-mysql
