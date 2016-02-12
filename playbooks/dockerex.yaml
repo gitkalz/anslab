@@ -12,8 +12,8 @@
       name={{ item }} 
       state=present
     with_items:
-     - python-dev
-     - python-setuptools
+      - python-dev
+      - python-setuptools
 #This task installs python pip
   - name: Install pip
     easy_install: 
@@ -54,17 +54,33 @@
     with_items: docker_users
     when: docker_users is defined
 
+  - name: Ensures guacsql dir exists
+    file: path=opt/guacsql state=directory mode=0755
 
- ###################
- #Task to pull Docker images
- ##################
-  - name: Pull and run the docker container glyptodon/guacd
+###################
+#Task to pull Docker images
+##################
+  - name: Pull and Create the docker container glyptodon/guacd
     docker: 
-      name={{ item.name }}
-      image={{ item.image }}
-      state=present
-    with_items:
-     - { name: 'lab-guacd', image: 'glyptodon/guacd' }
-     - { name: 'lab-guacamole', image: 'glyptodon/guacamole' }
-     - { name: 'lab-mysql', image: 'mysql' }
+      name: lab-guacd
+      image: glyptodon/guacd
+      state: started
+
+  - name: Pull and Create the docker container mysql
+    docker: 
+      name: lab-mysql
+      image: mysql
+      state: started
+      env: "MYSQL_ROOT_PASSWORD=Random123"
+      volumes:
+      - /opt/guacsql:/var/lib/mysql
+
+  - name: copy initdb.sql to mysql container
+    copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644
+
+  - name: Wait a few minutes for the IPs to be set to the container
+    wait_for: timeout=120
+
+
+
      
