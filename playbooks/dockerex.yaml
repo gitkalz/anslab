@@ -55,7 +55,7 @@
     when: docker_users is defined
 
   - name: Ensures guacsql dir exists
-    file: path=opt/guacsql state=directory mode=0755
+    file: path=opt/guacsql state=directory
 
 ###################
 #Task to pull Docker images
