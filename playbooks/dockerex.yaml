@@ -70,16 +70,20 @@
     docker: 
       name: lab-mysql
       image: mysql
-      state: started
+      state: present
       env: "MYSQL_ROOT_PASSWORD=Random123"
       volumes:
       - /opt/guacsql:/var/lib/mysql
 
+
   - name: copy initdb.sql to mysql container
     copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644
 
-  - name: Wait a few minutes for the IPs to be set to the container
-    wait_for: timeout=120
+
+  - name: Start the mysql docker container
+    docker:
+      name: lab-mysql
+      state: started
 
 
 
