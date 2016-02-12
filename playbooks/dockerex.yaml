@@ -64,10 +64,7 @@
     docker: 
       name: lab-guacd
       image: glyptodon/guacd
-      state: started
-
-  - name: copy initdb.sql to mysql container
-    copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644      
+      state: started  
 
   - name: Pull and Create the docker container mysql
     docker: 
@@ -85,12 +82,15 @@
     retries: 30
     delay: 10
 
-  - name: Fetch the MySQL Container IP
+  - name: copy initdb.sql to mysql container
+    copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644    
+
+  - name: Importing initdb.sql to mysql docker container
     shell: docker exec -it lab-mysql bash -c 'mysql -uroot -p$MYSQL_ROOT_PASSWORD < /var/lib/mysql/initdb.sql'
     register: db_create_status
 
   - name: print the mysql db creation status
-    debug: msg={{ db_create_status.stdout }}  
+    debug: msg={{ db_create_status.stdout }}
 
 
 
