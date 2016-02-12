@@ -66,25 +66,17 @@
       image: glyptodon/guacd
       state: started
 
+  - name: copy initdb.sql to mysql container
+    copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644      
+
   - name: Pull and Create the docker container mysql
     docker: 
       name: lab-mysql
       image: mysql
-      state: present
+      state: started
       env: "MYSQL_ROOT_PASSWORD=Random123"
       volumes:
       - /opt/guacsql:/var/lib/mysql
-
-
-  - name: copy initdb.sql to mysql container
-    copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644
-
-
-  - name: Start the mysql docker container
-    docker:
-      name: lab-mysql
-      image: mysql
-      state: started
 
   - name: Wait for the mysql server to start
     action: command docker logs lab-mysql
