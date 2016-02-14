@@ -80,7 +80,7 @@
     wait_for: timeout=120
 
   - name: Get Docker logs for mysql
-    action: command docker logs lab-guacamole
+    action: command docker logs lab-mysql
     register: mysql_status
 
   - name: Print guacamole logs
@@ -93,7 +93,7 @@
     shell: docker exec -it lab-mysql bash -c 'mysql -uroot -p$MYSQL_ROOT_PASSWORD < /var/lib/mysql/initdb.sql'
     register: db_create_status
 
-  - name: print the mysql db creation status
+  - name: printing the mysql db creation status
     debug: msg={{ db_create_status.stdout }}
 
   - name: Pull and Create docker container glyptodon/guacamole
@@ -102,8 +102,8 @@
       image: glyptodon/guacamole
       state: started
       links:
-      - "lab-guacd"
-      - "lab-mysql"
+      - "lab-guacd:guacd"
+      - "lab-mysql:mysql"
       ports:
       - "80:8080"
       env:
