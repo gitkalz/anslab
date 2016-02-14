@@ -76,13 +76,6 @@
       volumes:
         - /opt/guacsql:/var/lib/mysql
 
-  - name: Wait for the mysql server to start
-    action: command docker logs lab-mysql
-    register: mysql_logs
-    until: mysql_logs.stdout.find("ready for connections") != -1
-    retries: 30
-    delay: 10
-
   - name: copy initdb.sql to mysql container
     copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644    
 
@@ -92,6 +85,31 @@
 
   - name: print the mysql db creation status
     debug: msg={{ db_create_status.stdout }}
+
+  - name: Pull and Create docker container glyptodon/guacamole
+    docker:
+      name: lab-guacamole
+      image: glyptodon/guacamole
+      state: started
+      links:
+      - "lab-guacd"
+      - "lab-mysql"
+      ports:
+      - "80:8080"
+      env:
+          MYSQL_DATABASE=guacamole_db
+          MYSQL_USER=guacamole_user
+          MYSQL_PASSWORD=Random123
+
+  - name: Get Docker logs for guacamole
+    action: command docker logs lab-guacamole
+    register: guacamole_status
+
+  - name: Print guacamole logs
+    debug: msg={{ guacamole_status.stdout }}
+
+
+
 
 
 
