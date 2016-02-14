@@ -76,6 +76,16 @@
       volumes:
         - /opt/guacsql:/var/lib/mysql
 
+  - name: Wait a few minutes for the IPs to be set to the container
+    wait_for: timeout=120
+
+  - name: Get Docker logs for mysql
+    action: command docker logs lab-guacamole
+    register: mysql_status
+
+  - name: Print guacamole logs
+    debug: msg={{ mysql_status.stdout }}    
+
   - name: copy initdb.sql to mysql container
     copy: src=./initdb.sql dest=/opt/guacsql owner=root group=docker mode=0644    
 
