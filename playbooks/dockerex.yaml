@@ -99,7 +99,7 @@
       env:
           MYSQL_DATABASE=guacamole_db
           MYSQL_USER=guacamole_user
-          MYSQL_PASSWORD=Random123
+          MYSQL_PASSWORD=p4rER9hN2rvChApU
 
   - name: Get Docker logs for guacamole
     action: command docker logs lab-guacamole
